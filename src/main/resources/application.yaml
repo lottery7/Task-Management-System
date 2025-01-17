@@ -12,3 +12,17 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+jwt:
+  access:
+    secret: gZtzGGe/eJZTEnY79NacwUrB4O1sr0W3QjjW6D+UT7bpBkTyZthyjO/q7lptEu7ZGVLhxff6OfxDj8aEiDk6Gw==
+    expiration-minutes: 5
+  refresh:
+    secret: LYV+rl5QQegy5i24iIc99qgrwlDNAmC/KUyx7IEteqGpqcHAA5Ooe/8AMc3IDAxZQbys2dpEqdH4QSoPOvfpKg==
+    expiration-days: 20
+
+springdoc:
+  api-docs:
+    path: /docs/api
+  swagger-ui:
+    path: /docs/swagger-ui.html

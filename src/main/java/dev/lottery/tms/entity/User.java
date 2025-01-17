@@ -1,4 +1,4 @@
-package dev.lottery.tms.model;
+package dev.lottery.tms.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

@@ -1,6 +1,6 @@
 package dev.lottery.tms.respository;
 
-import dev.lottery.tms.model.User;
+import dev.lottery.tms.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

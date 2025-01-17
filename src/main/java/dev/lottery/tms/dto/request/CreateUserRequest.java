@@ -1,4 +1,4 @@
-package dev.lottery.tms.dto;
+package dev.lottery.tms.dto.request;
 
 import lombok.Data;
 
