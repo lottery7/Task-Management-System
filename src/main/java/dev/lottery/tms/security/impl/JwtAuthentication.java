@@ -1,6 +1,6 @@
 package dev.lottery.tms.security.impl;
 
-import dev.lottery.tms.entity.Role;
+import dev.lottery.tms.model.Role;
 import lombok.Data;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

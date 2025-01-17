@@ -1,4 +1,4 @@
-package dev.lottery.tms.entity;
+package dev.lottery.tms.model;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

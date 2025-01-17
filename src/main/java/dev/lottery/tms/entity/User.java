@@ -1,5 +1,6 @@
 package dev.lottery.tms.entity;
 
+import dev.lottery.tms.model.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

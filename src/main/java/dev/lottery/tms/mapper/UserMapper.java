@@ -2,7 +2,7 @@ package dev.lottery.tms.mapper;
 
 import dev.lottery.tms.dto.request.CreateUserRequest;
 import dev.lottery.tms.dto.response.UserResponse;
-import dev.lottery.tms.entity.Role;
+import dev.lottery.tms.model.Role;
 import dev.lottery.tms.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

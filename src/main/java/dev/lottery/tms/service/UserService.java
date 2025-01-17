@@ -5,7 +5,7 @@ import dev.lottery.tms.dto.response.UserResponse;
 import dev.lottery.tms.exception.EmailInUseException;
 import dev.lottery.tms.exception.UserNotFoundException;
 import dev.lottery.tms.mapper.UserMapper;
-import dev.lottery.tms.entity.Role;
+import dev.lottery.tms.model.Role;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.respository.UserRepository;
 import lombok.RequiredArgsConstructor;

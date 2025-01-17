@@ -1,6 +1,6 @@
 package dev.lottery.tms.util;
 
-import dev.lottery.tms.entity.Role;
+import dev.lottery.tms.model.Role;
 import dev.lottery.tms.security.impl.JwtAuthentication;
 import io.jsonwebtoken.Claims;
 
