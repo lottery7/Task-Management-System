@@ -1,6 +1,6 @@
 package dev.lottery.tms.service;
 
-import dev.lottery.tms.dto.request.CreateJwtRequest;
+import dev.lottery.tms.dto.request.LoginRequest;
 import dev.lottery.tms.dto.response.JwtResponse;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.InvalidJwtTokenException;
@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -27,6 +28,7 @@ public class AuthService {
 
     private final UserService userService;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder passwordEncoder;
 
     private void addAccessTokenCookie(@NonNull HttpServletResponse response, @NonNull String token) {
         AuthUtils.addTokenToCookie(response, accessTokenCookieName, jwtProvider.getAccessExpirationSeconds(), token);
@@ -44,9 +46,9 @@ public class AuthService {
         return AuthUtils.getCookie(request, refreshTokenCookieName).map(Cookie::getValue);
     }
 
-    public JwtResponse login(@NonNull CreateJwtRequest request, @NonNull HttpServletResponse response) {
+    public JwtResponse login(@NonNull LoginRequest request, @NonNull HttpServletResponse response) {
         User user = userService.getUserEntityByEmail(request.getEmail());
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
         }
 
@@ -79,7 +81,7 @@ public class AuthService {
         throw new InvalidJwtTokenException();
     }
 
-    public JwtResponse updateRefreshToken(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
+    public JwtResponse updateTokens(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         String refreshToken = getRefreshTokenFromCookie(request).orElseThrow(InvalidJwtTokenException::new);
 
         if (jwtProvider.validateRefreshToken(refreshToken)) {

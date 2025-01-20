@@ -3,7 +3,8 @@ package dev.lottery.tms.dto.request;
 import lombok.Data;
 
 @Data
-public class CreateJwtRequest {
+public class RegisterRequest {
+    private String name;
     private String email;
     private String password;
 }

@@ -1,8 +1,11 @@
 package dev.lottery.tms.controller;
 
-import dev.lottery.tms.dto.request.CreateJwtRequest;
+import dev.lottery.tms.dto.request.LoginRequest;
+import dev.lottery.tms.dto.request.RegisterRequest;
 import dev.lottery.tms.dto.response.JwtResponse;
+import dev.lottery.tms.dto.response.UserResponse;
 import dev.lottery.tms.service.AuthService;
+import dev.lottery.tms.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final UserService userService;
 
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody CreateJwtRequest request, HttpServletResponse response) {
+    public JwtResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
         return authService.login(request, response);
     }
 
-    @PostMapping("/token")
+    @PostMapping("/register")
+    public UserResponse register(@RequestBody RegisterRequest request, HttpServletResponse response) {
+        return userService.saveUser(request);
+    }
+
+    @PostMapping("/access-token/refresh")
     public JwtResponse getNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
         return authService.updateAccessToken(request, response);
     }
 
     @PostMapping("/refresh")
     public JwtResponse getNewRefreshToken(HttpServletRequest request, HttpServletResponse response) {
-        return authService.updateRefreshToken(request, response);
+        return authService.updateTokens(request, response);
     }
 }

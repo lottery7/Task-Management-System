@@ -18,12 +18,11 @@ public class User {
     private Long id;
 
     @NotBlank(message = "Name is required")
-    @Size(min = 4, max = 50, message = "Name must be between 4 and 50 characters")
+    @Size(min = 3, max = 30, message = "Name must be between 3 and 30 characters")
     @Column(nullable = false)
     private String name;
 
     @NotBlank(message = "Password is required")
-    @Size(min = 8, message = "Password must be at least 8 characters long")
     @Column(nullable = false)
     private String password;
 
