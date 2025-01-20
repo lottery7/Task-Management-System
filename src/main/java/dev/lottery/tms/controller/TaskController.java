@@ -1,6 +1,7 @@
 package dev.lottery.tms.controller;
 
 import dev.lottery.tms.dto.request.CreateTaskRequest;
+import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
 import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
 import dev.lottery.tms.dto.response.DeleteTaskResponse;
@@ -46,5 +47,11 @@ public class TaskController {
     public TaskResponse updateTaskStatus(@PathVariable(name = "id") Long taskId, UpdateTaskStatusRequest request)
             throws AccessDeniedException {
         return taskService.updateTaskStatus(taskId, request);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping("/{id}/priority")
+    public TaskResponse updateTaskPriority(@PathVariable(name = "id") Long taskId, UpdateTaskPriorityRequest request) {
+        return taskService.updateTaskPriority(taskId, request);
     }
 }

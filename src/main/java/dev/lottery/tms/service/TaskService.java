@@ -1,6 +1,7 @@
 package dev.lottery.tms.service;
 
 import dev.lottery.tms.dto.request.CreateTaskRequest;
+import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
 import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
 import dev.lottery.tms.dto.response.DeleteTaskResponse;
@@ -64,6 +65,15 @@ public class TaskService {
         }
 
         foundTask.setStatus(request.getStatus());
+
+        Task savedTask = taskRepository.save(foundTask);
+
+        return taskMapper.toTaskResponse(savedTask);
+    }
+
+    public TaskResponse updateTaskPriority(Long taskId, UpdateTaskPriorityRequest request) {
+        Task foundTask = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+        foundTask.setPriority(request.getPriority());
 
         Task savedTask = taskRepository.save(foundTask);
 
