@@ -7,6 +7,7 @@ import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class TaskController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("")
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskResponse createTask(CreateTaskRequest request) {
         return taskService.createNewTask(request);
     }
@@ -54,6 +56,7 @@ public class TaskController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or @taskService.isAssignee(#taskId)")
     @PostMapping("/{id}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
     public CommentResponse leaveComment(@PathVariable(name = "id") Long taskId, CreateCommentRequest request) {
         return taskService.addComment(taskId, request);
     }
