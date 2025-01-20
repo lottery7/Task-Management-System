@@ -35,11 +35,6 @@ public abstract class CommentMapper {
 
     public CommentsResponse toCommentsResponse(List<Comment> comments) {
         CommentsResponse response = new CommentsResponse();
-
-        if (comments == null) {
-            return response;
-        }
-
         response.setComments(toCommentResponseList(comments));
         return response;
     }

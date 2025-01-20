@@ -1,24 +1,24 @@
 package dev.lottery.tms.service;
 
 import dev.lottery.tms.dto.request.RegisterRequest;
+import dev.lottery.tms.dto.response.TasksResponse;
 import dev.lottery.tms.dto.response.UserResponse;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.EmailInUseException;
 import dev.lottery.tms.exception.UserNotFoundException;
+import dev.lottery.tms.mapper.TaskMapper;
 import dev.lottery.tms.mapper.UserMapper;
-import dev.lottery.tms.model.Role;
 import dev.lottery.tms.respository.UserRepository;
 import dev.lottery.tms.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final TaskMapper taskMapper;
 
     public UserResponse saveUser(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
@@ -47,5 +47,15 @@ public class UserService {
 
     public User getUserEntityById(Long id) {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
+    public TasksResponse getAllAssignedTasksById(Long id) {
+        User user = getUserEntityById(id);
+        return taskMapper.toTasksResponse(user.getAssignedTasks());
+    }
+
+    public TasksResponse getAllAuthoredTasksById(Long id) {
+        User user = getUserEntityById(id);
+        return taskMapper.toTasksResponse(user.getAuthoredTasks());
     }
 }
