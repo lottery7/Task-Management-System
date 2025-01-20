@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.AccessDeniedException;
-
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
@@ -43,9 +41,9 @@ public class TaskController {
         return taskService.deleteTask(taskId);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @taskService.isAssignee(#taskId)")
     @PatchMapping("/{id}/status")
-    public TaskResponse updateTaskStatus(@PathVariable(name = "id") Long taskId, UpdateTaskStatusRequest request)
-            throws AccessDeniedException {
+    public TaskResponse updateTaskStatus(@PathVariable(name = "id") Long taskId, UpdateTaskStatusRequest request) {
         return taskService.updateTaskStatus(taskId, request);
     }
 

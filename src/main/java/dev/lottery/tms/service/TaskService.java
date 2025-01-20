@@ -11,14 +11,11 @@ import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.TaskNotFoundException;
 import dev.lottery.tms.exception.UserNotFoundException;
 import dev.lottery.tms.mapper.TaskMapper;
-import dev.lottery.tms.model.Role;
 import dev.lottery.tms.respository.TaskRepository;
 import dev.lottery.tms.respository.UserRepository;
 import dev.lottery.tms.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.nio.file.AccessDeniedException;
 
 @Service
 @RequiredArgsConstructor
@@ -53,17 +50,8 @@ public class TaskService {
         return taskMapper.toTaskResponse(savedTask);
     }
 
-    public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) throws AccessDeniedException {
+    public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) {
         Task foundTask = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
-
-        String currentUserEmail = AuthUtils.getAuthentication().getEmail();
-        User currentUser = userRepository.findByEmail(currentUserEmail).orElseThrow(UserNotFoundException::new);
-
-        if (!currentUser.getRoles().contains(Role.ADMIN)
-                && !currentUser.getId().equals(foundTask.getAssignee().getId())) {
-            throw new AccessDeniedException("Access Denied");
-        }
-
         foundTask.setStatus(request.getStatus());
 
         Task savedTask = taskRepository.save(foundTask);
@@ -84,5 +72,12 @@ public class TaskService {
         taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
         taskRepository.deleteById(taskId);
         return new MessageResponse("Deleted successfully");
+    }
+
+    public boolean isAssignee(Long taskId) {
+        Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+
+        String email = AuthUtils.getAuthentication().getEmail();
+        return email.equals(task.getAssignee().getEmail());
     }
 }
