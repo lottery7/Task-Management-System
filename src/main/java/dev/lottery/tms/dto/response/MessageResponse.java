@@ -1,10 +1,10 @@
 package dev.lottery.tms.dto.response;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@Builder
-public class JwtResponse {
+@AllArgsConstructor
+public class MessageResponse {
     private String message;
 }

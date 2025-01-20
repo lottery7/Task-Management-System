@@ -4,7 +4,7 @@ import dev.lottery.tms.dto.request.CreateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
 import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
-import dev.lottery.tms.dto.response.DeleteTaskResponse;
+import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class TaskController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
-    public DeleteTaskResponse deleteTask(@PathVariable(name = "id") Long taskId) {
+    public MessageResponse deleteTask(@PathVariable(name = "id") Long taskId) {
         return taskService.deleteTask(taskId);
     }
 

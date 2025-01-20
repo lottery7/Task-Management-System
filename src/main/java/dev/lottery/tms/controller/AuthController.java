@@ -2,7 +2,7 @@ package dev.lottery.tms.controller;
 
 import dev.lottery.tms.dto.request.LoginRequest;
 import dev.lottery.tms.dto.request.RegisterRequest;
-import dev.lottery.tms.dto.response.JwtResponse;
+import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.UserResponse;
 import dev.lottery.tms.service.AuthService;
 import dev.lottery.tms.service.UserService;
@@ -22,7 +22,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public JwtResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public MessageResponse login(@RequestBody LoginRequest request, HttpServletResponse response) {
         return authService.login(request, response);
     }
 
@@ -32,12 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("/access-token/refresh")
-    public JwtResponse getNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
+    public MessageResponse getNewAccessToken(HttpServletRequest request, HttpServletResponse response) {
         return authService.updateAccessToken(request, response);
     }
 
     @PostMapping("/refresh")
-    public JwtResponse getNewRefreshToken(HttpServletRequest request, HttpServletResponse response) {
+    public MessageResponse refreshTokens(HttpServletRequest request, HttpServletResponse response) {
         return authService.updateTokens(request, response);
     }
 }

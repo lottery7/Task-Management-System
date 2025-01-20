@@ -1,7 +1,7 @@
 package dev.lottery.tms.service;
 
 import dev.lottery.tms.dto.request.LoginRequest;
-import dev.lottery.tms.dto.response.JwtResponse;
+import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.InvalidJwtTokenException;
 import dev.lottery.tms.exception.WrongPasswordException;
@@ -44,7 +44,7 @@ public class AuthService {
         return AuthUtils.getCookie(request, refreshTokenCookieName).map(Cookie::getValue);
     }
 
-    public JwtResponse login(@NonNull LoginRequest request, @NonNull HttpServletResponse response) {
+    public MessageResponse login(@NonNull LoginRequest request, @NonNull HttpServletResponse response) {
         User user = userService.getUserEntityByEmail(request.getEmail());
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new WrongPasswordException();
@@ -56,10 +56,10 @@ public class AuthService {
         addAccessTokenCookie(response, accessToken);
         addRefreshTokenCookie(response, refreshToken);
 
-        return JwtResponse.builder().message("Success").build();
+        return new MessageResponse("Logged in successfully");
     }
 
-    public JwtResponse updateAccessToken(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
+    public MessageResponse updateAccessToken(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         String refreshToken = getRefreshTokenFromCookie(request).orElseThrow(InvalidJwtTokenException::new);
 
         if (jwtProvider.validateRefreshToken(refreshToken)) {
@@ -73,13 +73,13 @@ public class AuthService {
 
             addAccessTokenCookie(response, newAccessToken);
 
-            return JwtResponse.builder().message("Success").build();
+            return new MessageResponse("Access token updated successfully");
         }
 
         throw new InvalidJwtTokenException();
     }
 
-    public JwtResponse updateTokens(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
+    public MessageResponse updateTokens(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response) {
         String refreshToken = getRefreshTokenFromCookie(request).orElseThrow(InvalidJwtTokenException::new);
 
         if (jwtProvider.validateRefreshToken(refreshToken)) {
@@ -95,7 +95,7 @@ public class AuthService {
             addAccessTokenCookie(response, newAccessToken);
             addRefreshTokenCookie(response, newRefreshToken);
 
-            return JwtResponse.builder().message("Success").build();
+            return new MessageResponse("Tokens updated successfully");
         }
 
         throw new InvalidJwtTokenException();

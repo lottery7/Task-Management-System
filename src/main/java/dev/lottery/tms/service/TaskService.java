@@ -4,7 +4,7 @@ import dev.lottery.tms.dto.request.CreateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
 import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
-import dev.lottery.tms.dto.response.DeleteTaskResponse;
+import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.entity.Task;
 import dev.lottery.tms.entity.User;
@@ -80,9 +80,9 @@ public class TaskService {
         return taskMapper.toTaskResponse(savedTask);
     }
 
-    public DeleteTaskResponse deleteTask(Long taskId) {
+    public MessageResponse deleteTask(Long taskId) {
         taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
         taskRepository.deleteById(taskId);
-        return new DeleteTaskResponse("Deleted successfully");
+        return new MessageResponse("Deleted successfully");
     }
 }
