@@ -41,6 +41,11 @@ public class CommonExceptionHandler {
         return getDefaultErrorResponse(HttpStatus.FORBIDDEN, "Access denied");
     }
 
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTaskNotFound(TaskNotFoundException e) {
+        return getDefaultErrorResponse(HttpStatus.NOT_FOUND, e.getMessage());
+    }
+
     @ExceptionHandler(NotAuthenticatedException.class)
     public ResponseEntity<ErrorResponse> handleNotAuthenticated(NotAuthenticatedException e) {
         return getDefaultErrorResponse(HttpStatus.FORBIDDEN, e.getMessage());

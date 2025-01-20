@@ -5,7 +5,7 @@ import dev.lottery.tms.model.TaskStatus;
 import lombok.Data;
 
 @Data
-public class CreateTaskRequest {
+public class UpdateTaskRequest {
     private String title;
     private String description;
     private TaskStatus status;

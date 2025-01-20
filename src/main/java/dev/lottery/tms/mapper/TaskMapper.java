@@ -1,6 +1,7 @@
 package dev.lottery.tms.mapper;
 
 import dev.lottery.tms.dto.request.CreateTaskRequest;
+import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.entity.Task;
 import dev.lottery.tms.entity.User;
@@ -18,9 +19,11 @@ public abstract class TaskMapper {
     @Lazy
     private UserRepository userRepository;
 
-    @Mapping(target = "author", source = "authorId", qualifiedByName = "mapUserFromId")
     @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "mapUserFromId")
     public abstract Task toTask(CreateTaskRequest createTaskRequest);
+
+    @Mapping(target = "assignee", source = "assigneeId", qualifiedByName = "mapUserFromId")
+    public abstract Task toTask(UpdateTaskRequest updateTaskRequest);
 
     @Mapping(target = "authorId", source = "author.id")
     @Mapping(target = "assigneeId", source = "assignee.id")
