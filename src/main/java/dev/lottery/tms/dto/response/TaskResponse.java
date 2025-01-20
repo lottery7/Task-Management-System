@@ -4,8 +4,6 @@ import dev.lottery.tms.model.TaskPriority;
 import dev.lottery.tms.model.TaskStatus;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
 public class TaskResponse {
     private Long id;
@@ -14,5 +12,4 @@ public class TaskResponse {
     private TaskPriority priority;
     private UserResponse author;
     private UserResponse assignee;
-    private List<CommentResponse> comments;
 }

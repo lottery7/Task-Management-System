@@ -1,9 +1,8 @@
 package dev.lottery.tms.controller;
 
-import dev.lottery.tms.dto.request.CreateTaskRequest;
-import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
-import dev.lottery.tms.dto.request.UpdateTaskRequest;
-import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
+import dev.lottery.tms.dto.request.*;
+import dev.lottery.tms.dto.response.CommentResponse;
+import dev.lottery.tms.dto.response.CommentsResponse;
 import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.service.TaskService;
@@ -26,7 +25,7 @@ public class TaskController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/{id}")
     public TaskResponse getTaskById(@PathVariable(name = "id") Long taskId) {
-        return taskService.getTaskById(taskId);
+        return taskService.getTaskDtoById(taskId);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -51,5 +50,22 @@ public class TaskController {
     @PatchMapping("/{id}/priority")
     public TaskResponse updateTaskPriority(@PathVariable(name = "id") Long taskId, UpdateTaskPriorityRequest request) {
         return taskService.updateTaskPriority(taskId, request);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or @taskService.isAssignee(#taskId)")
+    @PostMapping("/{id}/comments")
+    public CommentResponse leaveComment(@PathVariable(name = "id") Long taskId, CreateCommentRequest request) {
+        return taskService.addComment(taskId, request);
+    }
+
+    @GetMapping("/{id}/comments")
+    public CommentsResponse getComments(@PathVariable(name = "id") Long taskId) {
+        return taskService.getComments(taskId);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PatchMapping("/{id}/assignee")
+    public TaskResponse updateAssignee(@PathVariable(name = "id") Long taskId, UpdateAssigneeRequest request) {
+        return taskService.updateAssignee(taskId, request);
     }
 }

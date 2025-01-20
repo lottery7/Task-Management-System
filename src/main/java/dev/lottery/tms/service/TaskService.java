@@ -1,19 +1,18 @@
 package dev.lottery.tms.service;
 
-import dev.lottery.tms.dto.request.CreateTaskRequest;
-import dev.lottery.tms.dto.request.UpdateTaskPriorityRequest;
-import dev.lottery.tms.dto.request.UpdateTaskRequest;
-import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
+import dev.lottery.tms.dto.request.*;
+import dev.lottery.tms.dto.response.CommentResponse;
+import dev.lottery.tms.dto.response.CommentsResponse;
 import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
+import dev.lottery.tms.entity.Comment;
 import dev.lottery.tms.entity.Task;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.TaskNotFoundException;
-import dev.lottery.tms.exception.UserNotFoundException;
+import dev.lottery.tms.mapper.CommentMapper;
 import dev.lottery.tms.mapper.TaskMapper;
+import dev.lottery.tms.respository.CommentRepository;
 import dev.lottery.tms.respository.TaskRepository;
-import dev.lottery.tms.respository.UserRepository;
-import dev.lottery.tms.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,11 +21,12 @@ import org.springframework.stereotype.Service;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final TaskMapper taskMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
+    private final CommentMapper commentMapper;
+    private final CommentRepository commentRepository;
 
     public TaskResponse createNewTask(CreateTaskRequest request) {
-        String authorEmail = AuthUtils.getAuthentication().getEmail();
-        User author = userRepository.findByEmail(authorEmail).orElseThrow(UserNotFoundException::new);
+        User author = userService.getCurrentUserEntity();
 
         Task task = taskMapper.toTask(request);
         task.setAuthor(author);
@@ -36,13 +36,17 @@ public class TaskService {
         return taskMapper.toTaskResponse(savedTask);
     }
 
-    public TaskResponse getTaskById(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    public TaskResponse getTaskDtoById(Long taskId) {
+        Task task = getTaskEntityById(taskId);
         return taskMapper.toTaskResponse(task);
     }
 
+    public Task getTaskEntityById(Long taskId) {
+        return taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    }
+
     public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
-        Task foundTask = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+        Task foundTask = getTaskEntityById(taskId);
         Task task = taskMapper.toTask(request);
         task.setId(taskId);
         task.setAuthor(foundTask.getAuthor());
@@ -51,7 +55,7 @@ public class TaskService {
     }
 
     public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) {
-        Task foundTask = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+        Task foundTask = getTaskEntityById(taskId);
         foundTask.setStatus(request.getStatus());
 
         Task savedTask = taskRepository.save(foundTask);
@@ -60,7 +64,7 @@ public class TaskService {
     }
 
     public TaskResponse updateTaskPriority(Long taskId, UpdateTaskPriorityRequest request) {
-        Task foundTask = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+        Task foundTask = getTaskEntityById(taskId);
         foundTask.setPriority(request.getPriority());
 
         Task savedTask = taskRepository.save(foundTask);
@@ -74,10 +78,29 @@ public class TaskService {
         return new MessageResponse("Deleted successfully");
     }
 
-    public boolean isAssignee(Long taskId) {
-        Task task = taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
+    public CommentResponse addComment(Long taskId, CreateCommentRequest request) {
+        Comment comment = commentMapper.toComment(taskId, request);
+        comment.setUser(userService.getCurrentUserEntity());
+        Comment savedComment = commentRepository.save(comment);
+        return commentMapper.toCommentResponse(savedComment);
+    }
 
-        String email = AuthUtils.getAuthentication().getEmail();
-        return email.equals(task.getAssignee().getEmail());
+    public CommentsResponse getComments(Long taskId) {
+        Task task = getTaskEntityById(taskId);
+        return commentMapper.toCommentsResponse(task.getComments());
+    }
+
+    public boolean isAssignee(Long taskId) {
+        Task task = getTaskEntityById(taskId);
+        String email = userService.getCurrentUserEmail();
+        return task.getAssignee().getEmail().equals(email);
+    }
+
+    public TaskResponse updateAssignee(Long taskId, UpdateAssigneeRequest request) {
+        Task task = getTaskEntityById(taskId);
+        User newAssignee = userService.getUserEntityById(request.getAssigneeId());
+        task.setAssignee(newAssignee);
+        Task savedTask = taskRepository.save(task);
+        return taskMapper.toTaskResponse(savedTask);
     }
 }

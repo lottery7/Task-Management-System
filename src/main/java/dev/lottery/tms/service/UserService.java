@@ -8,6 +8,7 @@ import dev.lottery.tms.exception.UserNotFoundException;
 import dev.lottery.tms.mapper.UserMapper;
 import dev.lottery.tms.model.Role;
 import dev.lottery.tms.respository.UserRepository;
+import dev.lottery.tms.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,18 +30,22 @@ public class UserService {
         return userMapper.toUserResponse(savedUser);
     }
 
+    public User getCurrentUserEntity() {
+        String email = getCurrentUserEmail();
+        return getUserEntityByEmail(email);
+    }
+
+    public String getCurrentUserEmail() {
+        return AuthUtils.getAuthentication().getEmail();
+    }
+
     public User getUserEntityByEmail(String email) {
         return userRepository
                 .findByEmail(email)
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public UserResponse getUserDtoByEmail(String email) {
-        return userMapper.toUserResponse(getUserEntityByEmail(email));
-    }
-
-    public Set<Role> getUserRolesByEmail(String email) {
-        User user = getUserEntityByEmail(email);
-        return user.getRoles();
+    public User getUserEntityById(Long id) {
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 }
