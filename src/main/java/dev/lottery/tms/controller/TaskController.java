@@ -3,6 +3,7 @@ package dev.lottery.tms.controller;
 import dev.lottery.tms.dto.request.CreateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskRequest;
 import dev.lottery.tms.dto.request.UpdateTaskStatusRequest;
+import dev.lottery.tms.dto.response.DeleteTaskResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,12 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskResponse updateTask(@PathVariable(name = "id") Long taskId, UpdateTaskRequest request) {
         return taskService.updateTask(taskId, request);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/{id}")
+    public DeleteTaskResponse deleteTask(@PathVariable(name = "id") Long taskId) {
+        return taskService.deleteTask(taskId);
     }
 
     @PatchMapping("/{id}/status")
