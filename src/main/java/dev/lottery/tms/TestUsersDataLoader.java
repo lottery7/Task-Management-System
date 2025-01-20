@@ -37,6 +37,14 @@ public class TestUsersDataLoader implements ApplicationRunner {
         );
     }
 
+    private void registerEugeneUser() {
+        registerUser("Eugene Akimov",
+                "eugene@email.com",
+                "Eugene's password",
+                Set.of(Role.USER)
+        );
+    }
+
     private void registerTestAdmin() {
         registerUser("TEST_ADMIN",
                 "test_admin@email.com",
@@ -49,5 +57,6 @@ public class TestUsersDataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         registerTestUser();
         registerTestAdmin();
+        registerEugeneUser();
     }
 }
