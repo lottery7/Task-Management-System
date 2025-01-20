@@ -1,7 +1,6 @@
 package dev.lottery.tms.mapper;
 
 
-import dev.lottery.tms.dto.request.CreateCommentRequest;
 import dev.lottery.tms.dto.response.CommentResponse;
 import dev.lottery.tms.dto.response.CommentsResponse;
 import dev.lottery.tms.entity.Comment;
@@ -24,7 +23,7 @@ public abstract class CommentMapper {
     private TaskService taskService;
 
     @Mapping(target = "task", source = "taskId", qualifiedByName = "mapTaskFromId")
-    public abstract Comment toComment(Long taskId, CreateCommentRequest createCommentRequest);
+    public abstract Comment toComment(Long taskId, String text);
 
     @Named("mapTaskFromId")
     protected Task mapTaskFromId(Long id) {

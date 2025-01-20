@@ -1,8 +1,7 @@
 package dev.lottery.tms.service;
 
-import dev.lottery.tms.dto.request.*;
+import dev.lottery.tms.dto.request.CreateTaskRequest;
 import dev.lottery.tms.dto.response.CommentResponse;
-import dev.lottery.tms.dto.response.CommentsResponse;
 import dev.lottery.tms.dto.response.MessageResponse;
 import dev.lottery.tms.dto.response.TaskResponse;
 import dev.lottery.tms.entity.Comment;
@@ -11,6 +10,8 @@ import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.TaskNotFoundException;
 import dev.lottery.tms.mapper.CommentMapper;
 import dev.lottery.tms.mapper.TaskMapper;
+import dev.lottery.tms.model.TaskPriority;
+import dev.lottery.tms.model.TaskStatus;
 import dev.lottery.tms.respository.CommentRepository;
 import dev.lottery.tms.respository.TaskRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +46,7 @@ public class TaskService {
         return taskRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
     }
 
-    public TaskResponse updateTask(Long taskId, UpdateTaskRequest request) {
+    public TaskResponse updateTask(Long taskId, CreateTaskRequest request) {
         Task foundTask = getTaskEntityById(taskId);
         Task task = taskMapper.toTask(request);
         task.setId(taskId);
@@ -54,18 +55,18 @@ public class TaskService {
         return taskMapper.toTaskResponse(savedTask);
     }
 
-    public TaskResponse updateTaskStatus(Long taskId, UpdateTaskStatusRequest request) {
+    public TaskResponse updateTaskStatus(Long taskId, TaskStatus taskStatus) {
         Task foundTask = getTaskEntityById(taskId);
-        foundTask.setStatus(request.getStatus());
+        foundTask.setStatus(taskStatus);
 
         Task savedTask = taskRepository.save(foundTask);
 
         return taskMapper.toTaskResponse(savedTask);
     }
 
-    public TaskResponse updateTaskPriority(Long taskId, UpdateTaskPriorityRequest request) {
+    public TaskResponse updateTaskPriority(Long taskId, TaskPriority taskPriority) {
         Task foundTask = getTaskEntityById(taskId);
-        foundTask.setPriority(request.getPriority());
+        foundTask.setPriority(taskPriority);
 
         Task savedTask = taskRepository.save(foundTask);
 
@@ -78,16 +79,11 @@ public class TaskService {
         return new MessageResponse("Deleted successfully");
     }
 
-    public CommentResponse addComment(Long taskId, CreateCommentRequest request) {
-        Comment comment = commentMapper.toComment(taskId, request);
+    public CommentResponse addComment(Long taskId, String text) {
+        Comment comment = commentMapper.toComment(taskId, text);
         comment.setUser(userService.getCurrentUserEntity());
         Comment savedComment = commentRepository.save(comment);
         return commentMapper.toCommentResponse(savedComment);
-    }
-
-    public CommentsResponse getComments(Long taskId) {
-        Task task = getTaskEntityById(taskId);
-        return commentMapper.toCommentsResponse(task.getComments());
     }
 
     public boolean isAssignee(Long taskId) {
@@ -96,9 +92,9 @@ public class TaskService {
         return task.getAssignee().getEmail().equals(email);
     }
 
-    public TaskResponse updateAssignee(Long taskId, UpdateAssigneeRequest request) {
+    public TaskResponse updateAssignee(Long taskId, Long assigneeId) {
         Task task = getTaskEntityById(taskId);
-        User newAssignee = userService.getUserEntityById(request.getAssigneeId());
+        User newAssignee = userService.getUserEntityById(assigneeId);
         task.setAssignee(newAssignee);
         Task savedTask = taskRepository.save(task);
         return taskMapper.toTaskResponse(savedTask);

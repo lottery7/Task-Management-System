@@ -3,20 +3,26 @@ package dev.lottery.tms.service;
 import dev.lottery.tms.dto.request.RegisterRequest;
 import dev.lottery.tms.dto.response.TasksResponse;
 import dev.lottery.tms.dto.response.UserResponse;
+import dev.lottery.tms.entity.Task;
 import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.EmailInUseException;
 import dev.lottery.tms.exception.UserNotFoundException;
 import dev.lottery.tms.mapper.TaskMapper;
 import dev.lottery.tms.mapper.UserMapper;
+import dev.lottery.tms.respository.TaskRepository;
 import dev.lottery.tms.respository.UserRepository;
 import dev.lottery.tms.util.AuthUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final TaskRepository taskRepository;
     private final UserMapper userMapper;
     private final TaskMapper taskMapper;
 
@@ -49,13 +55,17 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    public TasksResponse getAllAssignedTasksById(Long id) {
-        User user = getUserEntityById(id);
-        return taskMapper.toTasksResponse(user.getAssignedTasks());
+    public TasksResponse getAssignedTasksById(Long id, int page, int size) {
+        User ignored = getUserEntityById(id);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Task> tasksPage = taskRepository.findByAssigneeId(id, pageable);
+        return taskMapper.toTasksResponse(tasksPage.getContent());
     }
 
-    public TasksResponse getAllAuthoredTasksById(Long id) {
-        User user = getUserEntityById(id);
-        return taskMapper.toTasksResponse(user.getAuthoredTasks());
+    public TasksResponse getAuthoredTasksById(Long id, int page, int size) {
+        User ignored = getUserEntityById(id);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Task> tasksPage = taskRepository.findByAuthorId(id, pageable);
+        return taskMapper.toTasksResponse(tasksPage.getContent());
     }
 }
