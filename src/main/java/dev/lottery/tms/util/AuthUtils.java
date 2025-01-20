@@ -1,9 +1,12 @@
 package dev.lottery.tms.util;
 
+import dev.lottery.tms.exception.NotAuthenticatedException;
+import dev.lottery.tms.security.impl.JwtAuthentication;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
@@ -31,5 +34,14 @@ public class AuthUtils {
         }
 
         return Optional.ofNullable(foundCookie);
+    }
+
+    public static JwtAuthentication getAuthentication() {
+        JwtAuthentication auth = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            throw new NotAuthenticatedException();
+        }
+
+        return auth;
     }
 }

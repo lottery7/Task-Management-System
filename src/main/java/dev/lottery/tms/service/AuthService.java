@@ -6,7 +6,6 @@ import dev.lottery.tms.entity.User;
 import dev.lottery.tms.exception.InvalidJwtTokenException;
 import dev.lottery.tms.exception.WrongPasswordException;
 import dev.lottery.tms.security.JwtProvider;
-import dev.lottery.tms.security.impl.JwtAuthentication;
 import dev.lottery.tms.util.AuthUtils;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
@@ -14,7 +13,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -101,9 +99,5 @@ public class AuthService {
         }
 
         throw new InvalidJwtTokenException();
-    }
-
-    public JwtAuthentication getAuthentication() {
-        return (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
     }
 }

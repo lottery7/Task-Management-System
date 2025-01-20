@@ -41,6 +41,11 @@ public class CommonExceptionHandler {
         return getDefaultErrorResponse(HttpStatus.FORBIDDEN, "Access denied");
     }
 
+    @ExceptionHandler(NotAuthenticatedException.class)
+    public ResponseEntity<ErrorResponse> handleNotAuthenticated(NotAuthenticatedException e) {
+        return getDefaultErrorResponse(HttpStatus.FORBIDDEN, e.getMessage());
+    }
+
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<ErrorResponse> handleThrowable(Throwable e) {
         return getDefaultErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
