@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtProviderImpl implements JwtProvider {
     private final SecretKey accessSecret;
     private final SecretKey refreshSecret;
+
     private final long accessExpirationMs;
     private final long refreshExpirationMs;
 
@@ -120,5 +121,15 @@ public class JwtProviderImpl implements JwtProvider {
     @Override
     public Claims getRefreshClaims(@NonNull String token) {
         return getClaims(token, refreshSecret);
+    }
+
+    @Override
+    public int getAccessExpirationSeconds() {
+        return (int) TimeUnit.MILLISECONDS.toSeconds(accessExpirationMs);
+    }
+
+    @Override
+    public int getRefreshExpirationSeconds() {
+        return (int) TimeUnit.MILLISECONDS.toSeconds(refreshExpirationMs);
     }
 }

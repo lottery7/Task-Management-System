@@ -16,4 +16,8 @@ public interface JwtProvider {
     Claims getAccessClaims(@NonNull String token);
 
     Claims getRefreshClaims(@NonNull String token);
+
+    int getAccessExpirationSeconds();
+
+    int getRefreshExpirationSeconds();
 }
