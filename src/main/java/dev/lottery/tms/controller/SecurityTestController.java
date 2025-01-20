@@ -15,7 +15,6 @@ public class SecurityTestController {
     private final AuthService authService;
 
     @GetMapping("/user")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public String getHelloUser() {
         Authentication auth = authService.getAuthentication();
         return String.format("Hello, user %s!", auth.getName());
